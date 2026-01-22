@@ -3,12 +3,113 @@ from tkinter import ttk
 from tkinter import messagebox
 from plant import Plant
 from datetime import datetime, timedelta
+import pymysql
 
 plants = {}                 
 currentPlant = None         
 editMode = False            
 currentScreen = "H"         
 reminder_list = []          
+
+#MySQL Database Connection (PyMySQL)
+try:
+    db = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="Ziggy1989!",
+        database="plant_tracker",
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+    cursor = db.cursor()
+    print("Connected to MySQL")
+
+except Exception as err:
+    print("Database connection failed:", err)
+    db = None
+    cursor = None
+
+def loadPlantsFromDB():
+    if not cursor:
+        print("No database connection")
+        return
+
+    try:
+        cursor.execute("SELECT * FROM plants")
+        rows = cursor.fetchall()
+
+        for row in rows:
+            plant = Plant(
+                row["name"],
+                row["water_hours"],
+                row["sunlight_hours"]
+            )
+
+            plant.last_watered = row["last_watered"]
+            plant.last_rotated = row["last_rotated"]
+
+            plants[plant.name] = plant
+
+        print(f"Loaded {len(plants)} plants from database")
+
+    except Exception as e:
+        print("Error loading plants:", e)
+
+def db_insert_plant(plant):
+    if not cursor:
+        return
+
+    cursor.execute(
+        """
+        INSERT INTO plants (name, water_hours, sunlight_hours, last_watered, last_rotated)
+        VALUES (%s, %s, %s, %s, %s)
+        """,
+        (
+            plant.name,
+            plant.water,
+            plant.sunlight,
+            plant.last_watered,
+            plant.last_rotated
+        )
+    )
+    db.commit()
+
+
+def db_update_plant(old_name, plant):
+    if not cursor:
+        return
+
+    cursor.execute(
+        """
+        UPDATE plants
+        SET name=%s,
+            water_hours=%s,
+            sunlight_hours=%s,
+            last_watered=%s,
+            last_rotated=%s
+        WHERE name=%s
+        """,
+        (
+            plant.name,
+            plant.water,
+            plant.sunlight,
+            plant.last_watered,
+            plant.last_rotated,
+            old_name
+        )
+    )
+    db.commit()
+
+
+def db_delete_plant(name):
+    if not cursor:
+        return
+
+    cursor.execute(
+        "DELETE FROM plants WHERE name=%s",
+        (name,)
+    )
+    db.commit()
 
 root = tk.Tk()
 root.title("Plant Tracker")
@@ -252,6 +353,7 @@ def addPlant():
         currentPlant.sunlight = sun
 
         refreshPlantButtons()
+        db_update_plant(old_name, currentPlant)
 
         editMode = False
         PLAconfirm.config(text="CONFIRM")
@@ -260,6 +362,7 @@ def addPlant():
         plant = Plant(name, water, sun)
         plants[name] = plant
         add_plant_button(name)
+        db_insert_plant(plant)
 
     PLAframe.place_forget()
     pn.delete(0, tk.END)
@@ -327,6 +430,7 @@ def deletePlant():
     if not confirm:
         return
 
+    db_delete_plant(currentPlant.name)
     plants.pop(currentPlant.name, None)
 
     currentPlant = None
@@ -619,6 +723,8 @@ def completeTask(row, button, plant, task_type):
     elif task_type == "rotate":
         plant.last_rotated = now
 
+    db_update_plant(plant.name, plant)
+    
     root.after(600, generateTodoTasks)
 
 # Reminders 
@@ -786,6 +892,8 @@ def toggleReminder(reminder):
     refreshReminderList()
 
 check_reminders()
+loadPlantsFromDB()
+refreshPlantButtons()
 generateTodoTasks()
 print("program started")
 root.mainloop()
