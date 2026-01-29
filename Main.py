@@ -8,8 +8,8 @@ import pymysql
 plants = {}                 
 currentPlant = None         
 editMode = False            
-currentScreen = "H"         
-reminder_list = []          
+currentScreen = "h"         
+reminderList = []          
 
 #PyMySQL Database
 try:
@@ -55,7 +55,7 @@ def loadPlantsFromDB():
     except Exception as e:
         print("Error loading plants:", e)
 
-def db_insert_plant(plant):
+def dbInsertPlant(plant):
     if not cursor:
         return
 
@@ -75,7 +75,7 @@ def db_insert_plant(plant):
     db.commit()
 
 
-def db_update_plant(old_name, plant):
+def dbUpdatePlant(oldName, plant):
     if not cursor:
         return
 
@@ -95,13 +95,13 @@ def db_update_plant(old_name, plant):
             plant.sunlight,
             plant.last_watered,
             plant.last_rotated,
-            old_name
+            oldName
         )
     )
     db.commit()
 
 
-def db_delete_plant(name):
+def dbDeletePlant(name):
     if not cursor:
         return
 
@@ -118,45 +118,45 @@ root.geometry("1920x1080")
 home = tk.Frame(root)
 header = tk.Frame(root)
 plantLibrary = tk.Frame(root)
-toDo = tk.Frame(root)
+todo = tk.Frame(root)
 reminders = tk.Frame(root)
 
 home.place(relx=0, rely=0, relwidth=1, relheight=1)
 header.place(relx=0, rely=0, relwidth=1, relheight=1)
 plantLibrary.place(relx=0, y=200, relwidth=1, relheight=1)
-toDo.place(relx=0, y=200, relwidth=1, relheight=1)
+todo.place(relx=0, y=200, relwidth=1, relheight=1)
 reminders.place(relx=0, y=200, relwidth=1, relheight=1)
 
 home.tkraise()
 
-def on_screen_switch(button_id):
-    if currentScreen == "PL" and button_id == "A":
-        swap_header(0)
-    elif currentScreen == "PL" and button_id == "B":
-        swap_header(2)
-    elif currentScreen == "PL" and button_id == "C":
-        swap_header(3)
+def onScreenSwitch(button_id):
+    if currentScreen == "pl" and button_id == "A":
+        swapHeader(0)
+    elif currentScreen == "pl" and button_id == "B":
+        swapHeader(2)
+    elif currentScreen == "pl" and button_id == "C":
+        swapHeader(3)
 
-    elif currentScreen == "TD" and button_id == "A":
-        swap_header(1)
-    elif currentScreen == "TD" and button_id == "B":
-        swap_header(0)
-    elif currentScreen == "TD" and button_id == "C":
-        swap_header(3)
+    elif currentScreen == "td" and button_id == "A":
+        swapHeader(1)
+    elif currentScreen == "td" and button_id == "B":
+        swapHeader(0)
+    elif currentScreen == "td" and button_id == "C":
+        swapHeader(3)
 
-    elif currentScreen == "R" and button_id == "A":
-        swap_header(1)
-    elif currentScreen == "R" and button_id == "B":
-        swap_header(2)
-    elif currentScreen == "R" and button_id == "C":
-        swap_header(0)
+    elif currentScreen == "r" and button_id == "A":
+        swapHeader(1)
+    elif currentScreen == "r" and button_id == "B":
+        swapHeader(2)
+    elif currentScreen == "r" and button_id == "C":
+        swapHeader(0)
 
-    elif currentScreen == "H" and button_id == "A":
-        swap_header(1)
-    elif currentScreen == "H" and button_id == "B":
-        swap_header(2)
-    elif currentScreen == "H" and button_id == "C":
-        swap_header(3)
+    elif currentScreen == "h" and button_id == "A":
+        swapHeader(1)
+    elif currentScreen == "h" and button_id == "B":
+        swapHeader(2)
+    elif currentScreen == "h" and button_id == "C":
+        swapHeader(3)
 
     else:
         print(f"Unknown navigation: {currentScreen}, {button_id}")
@@ -173,179 +173,179 @@ titleLabel = tk.Label(
 )
 titleLabel.pack(fill="both")
 
-PLButtonFrame = tk.Frame(home, height=200, width=800)
-PLButtonFrame.place(x=550, y=200)
+plantLibraryButtonFrame = tk.Frame(home, height=200, width=800)
+plantLibraryButtonFrame.place(x=550, y=200)
 
-PLButton = tk.Button(
-    PLButtonFrame,
+plantLibraryButton = tk.Button(
+    plantLibraryButtonFrame,
     text="Plant Library",
     bg="#286a26",
     fg="white",
     font=("Helvetica", 80),
     width=13,
-    command=lambda: on_screen_switch("A")
+    command=lambda: onScreenSwitch("A")
 )
-PLButton.pack()
+plantLibraryButton.pack()
 
-TDButtonFrame = tk.Frame(home, height=200, width=800)
-TDButtonFrame.place(x=550, y=450)
+todoButtonFrame = tk.Frame(home, height=200, width=800)
+todoButtonFrame.place(x=550, y=450)
 
-TDButton = tk.Button(
-    TDButtonFrame,
+todoButton = tk.Button(
+    todoButtonFrame,
     text="To-Do List",
     bg="#286a26",
     fg="white",
     font=("Helvetica", 80),
     width=13,
-    command=lambda: on_screen_switch("B")
+    command=lambda: onScreenSwitch("B")
 )
-TDButton.pack()
+todoButton.pack()
 
-RButtonFrame = tk.Frame(home, height=200, width=800)
-RButtonFrame.place(x=550, y=700)
+remindersButtonFrame = tk.Frame(home, height=200, width=800)
+remindersButtonFrame.place(x=550, y=700)
 
-RButton = tk.Button(
-    RButtonFrame,
+remindersButton = tk.Button(
+    remindersButtonFrame,
     text="Reminders",
     bg="#286a26",
     fg="white",
     font=("Helvetica", 80),
     width=13,
-    command=lambda: on_screen_switch("C")
+    command=lambda: onScreenSwitch("C")
 )
-RButton.pack()
+remindersButton.pack()
 
 #Header Bar
 
-HLabel = tk.Label(
+headerLabel = tk.Label(
     header,
     text="placeholder",
     bg="#36ad53",
     fg="white",
     font=("Helvetica", 63)
 )
-HLabel.pack(fill="both")
+headerLabel.pack(fill="both")
 
-AHeaderFrame = tk.Frame(header, height=100, width=640)
-AHeaderFrame.place(x=0, y=100)
+aHeaderFrame = tk.Frame(header, height=100, width=640)
+aHeaderFrame.place(x=0, y=100)
 
-AHeader = tk.Button(
-    AHeaderFrame,
+aHeader = tk.Button(
+    aHeaderFrame,
     bg="#286a26",
     fg="white",
     font=("Helvetica", 40),
     width=21,
-    command=lambda: on_screen_switch("A")
+    command=lambda: onScreenSwitch("A")
 )
-AHeader.pack()
+aHeader.pack()
 
-BHeaderFrame = tk.Frame(header, height=100, width=640)
-BHeaderFrame.place(x=640, y=100)
+bHeaderFrame = tk.Frame(header, height=100, width=640)
+bHeaderFrame.place(x=640, y=100)
 
-BHeader = tk.Button(
-    BHeaderFrame,
+bHeader = tk.Button(
+    bHeaderFrame,
     bg="#286a26",
     fg="white",
     font=("Helvetica", 40),
     width=21,
-    command=lambda: on_screen_switch("B")
+    command=lambda: onScreenSwitch("B")
 )
-BHeader.pack()
+bHeader.pack()
 
-CHeaderFrame = tk.Frame(header, height=100, width=640)
-CHeaderFrame.place(x=1280, y=100)
+cHeaderFrame = tk.Frame(header, height=100, width=640)
+cHeaderFrame.place(x=1280, y=100)
 
-CHeader = tk.Button(
-    CHeaderFrame,
+cHeader = tk.Button(
+    cHeaderFrame,
     bg="#286a26",
     fg="white",
     font=("Helvetica", 40),
     width=21,
-    command=lambda: on_screen_switch("C")
+    command=lambda: onScreenSwitch("C")
 )
-CHeader.pack()
+cHeader.pack()
 
-def swap_header(page):
+def swapHeader(page):
     global currentScreen
 
     if page == 0:
-        currentScreen = "H"
+        currentScreen = "h"
         home.tkraise()
 
     elif page == 1:
-        currentScreen = "PL"
-        HLabel.config(text="Plant Library")
-        AHeader.config(text="Home")
-        BHeader.config(text="To-Do List")
-        CHeader.config(text="Reminders")
+        currentScreen = "pl"
+        headerLabel.config(text="Plant Library")
+        aHeader.config(text="Home")
+        bHeader.config(text="To-Do List")
+        cHeader.config(text="Reminders")
         header.tkraise()
         plantLibrary.tkraise()
 
     elif page == 2:
-        currentScreen = "TD"
-        HLabel.config(text="To-Do List")
-        AHeader.config(text="Plant Library")
-        BHeader.config(text="Home")
-        CHeader.config(text="Reminders")
+        currentScreen = "td"
+        headerLabel.config(text="To-Do List")
+        aHeader.config(text="Plant Library")
+        bHeader.config(text="Home")
+        cHeader.config(text="Reminders")
         header.tkraise()
-        toDo.tkraise()
+        todo.tkraise()
         generateTodoTasks()
 
     elif page == 3:
-        currentScreen = "R"
-        HLabel.config(text="Reminders")
-        AHeader.config(text="Plant Library")
-        BHeader.config(text="To-Do List")
-        CHeader.config(text="Home")
+        currentScreen = "r"
+        headerLabel.config(text="Reminders")
+        aHeader.config(text="Plant Library")
+        bHeader.config(text="To-Do List")
+        cHeader.config(text="Home")
         header.tkraise()
         reminders.tkraise()
 
-#Plant Library 
+#plant Library 
 
-plant_buttons = []
+plantButtons = []
 
-def open_plant_detail(plant_name):
+def openPlantDetail(plantName):
     global currentPlant
-    plant = plants.get(plant_name)
+    plant = plants.get(plantName)
     if not plant:
         return
 
     currentPlant = plant
-    PD_title.config(text=plant.name)
-    PD_water.config(text=f"Water every: {plant.water} hours")
-    PD_sun.config(text=f"Rotate every: {plant.sunlight} hours")
+    plantDetailTitle.config(text=plant.name)
+    plantDetailWater.config(text=f"Water every: {plant.water} hours")
+    plantDetailSun.config(text=f"Rotate every: {plant.sunlight} hours")
     plantDetailFrame.place(x=400, y=200)
 
-def add_plant_button(plant_name):
-    btn = tk.Button(
+def addPlantButton(plantName):
+    button = tk.Button(
         plantButtonFrame,
-        text=plant_name,
+        text=plantName,
         anchor="w",
         font=("Helvetica", 30),
         bg="#DFF5D8",
         relief="flat",
-        command=lambda n=plant_name: open_plant_detail(n)
+        command=lambda n=plantName: openPlantDetail(n)
     )
-    btn.pack(fill="x", padx=20, pady=5)
-    plant_buttons.append(btn)
+    button.pack(fill="x", padx=20, pady=5)
+    plantButtons.append(button)
 
-def PLAraise():
-    PLAframe.place(x=600, y=60)
+def plantLibraryAddRaise():
+    plantLibraryAddFrame.place(x=600, y=60)
 
 def addPlant():
     global editMode
 
-    name = pn.get()
-    water = pw.get()
-    sun = ps.get()
+    name = plantName.get()
+    water = plantWater.get()
+    sun = plantSun.get()
 
     if not name:
         return
 
     if editMode:
-        old_name = currentPlant.name
-        if old_name != name:
-            plants.pop(old_name)
+        oldName = currentPlant.name
+        if oldName != name:
+            plants.pop(oldName)
             plants[name] = currentPlant
 
         currentPlant.name = name
@@ -353,21 +353,21 @@ def addPlant():
         currentPlant.sunlight = sun
 
         refreshPlantButtons()
-        db_update_plant(old_name, currentPlant)
+        dbUpdatePlant(oldName, currentPlant)
 
         editMode = False
-        PLAconfirm.config(text="CONFIRM")
+        plantLibraryAddConfirm.config(text="CONFIRM")
         plantDetailFrame.place_forget()
     else:
         plant = Plant(name, water, sun)
         plants[name] = plant
-        add_plant_button(name)
-        db_insert_plant(plant)
+        addPlantButton(name)
+        dbInsertPlant(plant)
 
-    PLAframe.place_forget()
-    pn.delete(0, tk.END)
-    pw.delete(0, tk.END)
-    ps.delete(0, tk.END)
+    plantLibraryAddFrame.place_forget()
+    plantName.delete(0, tk.END)
+    plantWater.delete(0, tk.END)
+    plantSun.delete(0, tk.END)
 
     generateTodoTasks()
 
@@ -375,23 +375,23 @@ def refreshPlantButtons():
     for widget in plantButtonFrame.winfo_children():
         widget.destroy()
 
-    plant_buttons.clear()
+    plantButtons.clear()
 
     for name in plants:
-        add_plant_button(name)
+        addPlantButton(name)
 
 def cancel():
     global editMode
     editMode = False
 
-    PLAconfirm.config(text="CONFIRM")
-    PLAframe.place_forget()
+    plantLibraryAddConfirm.config(text="CONFIRM")
+    plantLibraryAddFrame.place_forget()
 
-    pn.delete(0, tk.END)
-    pw.delete(0, tk.END)
-    ps.delete(0, tk.END)
+    plantName.delete(0, tk.END)
+    plantWater.delete(0, tk.END)
+    plantSun.delete(0, tk.END)
 
-def update_scrollregion(event):
+def updateScrollRegion(event):
     plantCanvas.configure(scrollregion=plantCanvas.bbox("all"))
 
 
@@ -403,18 +403,18 @@ def editPlant():
 
     editMode = True
 
-    pn.delete(0, tk.END)
-    pn.insert(0, currentPlant.name)
+    plantName.delete(0, tk.END)
+    plantName.insert(0, currentPlant.name)
 
-    pw.delete(0, tk.END)
-    pw.insert(0, currentPlant.water)
+    plantWater.delete(0, tk.END)
+    plantWater.insert(0, currentPlant.water)
 
-    ps.delete(0, tk.END)
-    ps.insert(0, currentPlant.sunlight)
+    plantSun.delete(0, tk.END)
+    plantSun.insert(0, currentPlant.sunlight)
 
-    PLAconfirm.config(text="SAVE")
-    PLAframe.place(x=600, y=60)
-    PLAframe.tkraise()
+    plantLibraryAddConfirm.config(text="SAVE")
+    plantLibraryAddFrame.place(x=600, y=60)
+    plantLibraryAddFrame.tkraise()
 
 def deletePlant():
     global currentPlant, editMode
@@ -423,14 +423,14 @@ def deletePlant():
         return
 
     confirm = messagebox.askyesno(
-        "Delete Plant",
+        "Delete plant",
         f"Are you sure you want to delete {currentPlant.name}?"
     )
 
     if not confirm:
         return
 
-    db_delete_plant(currentPlant.name)
+    dbDeletePlant(currentPlant.name)
     plants.pop(currentPlant.name, None)
 
     currentPlant = None
@@ -438,7 +438,7 @@ def deletePlant():
 
     plantDetailFrame.place_forget()
     refreshPlantButtons()
-    PLAbutton.place(x=40, y=680)
+    plantLibraryAddButton.place(x=40, y=680)
 
     generateTodoTasks()
 
@@ -464,63 +464,63 @@ plantCanvas.configure(yscrollcommand=plantScrollbar.set)
 plantButtonFrame = tk.Frame(plantCanvas, bg="#DFF5D8")
 plantCanvas.create_window((0, 0), window=plantButtonFrame, anchor="nw")
 
-plantButtonFrame.bind("<Configure>", update_scrollregion)
+plantButtonFrame.bind("<Configure>", updateScrollRegion)
 
-def _on_mousewheel(event):
+def onMousewheel(event):
     plantCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-plantCanvas.bind_all("<MouseWheel>", _on_mousewheel)
+plantCanvas.bind_all("<MouseWheel>", onMousewheel)
 
-PLAbutton = tk.Button(
+plantLibraryAddButton = tk.Button(
     plantLibrary,
-    text="Add Plant",
+    text="Add plant",
     bg="green",
     fg="white",
     font=("Helvetica", 40),
     width=10,
-    command=PLAraise
+    command=plantLibraryAddRaise
 )
-PLAbutton.place(x=40, y=680)
+plantLibraryAddButton.place(x=40, y=680)
 
-#Add Plant 
+#Add plant 
 
-PLAframe = tk.Frame(plantLibrary, width=730, height=600, bg="#E8E8E8")
+plantLibraryAddFrame = tk.Frame(plantLibrary, width=730, height=600, bg="#E8E8E8")
 
-PLAname = tk.Label(
-    PLAframe,
+plantLibraryAddName = tk.Label(
+    plantLibraryAddFrame,
     text="Enter Plant Name:",
     font=("Helvetica", 40),
     bg="#E8E8E8"
 )
-PLAname.place(x=10, y=10)
+plantLibraryAddName.place(x=10, y=10)
 
-pn = tk.Entry(PLAframe, bg="grey", font=("Helvetica", 40))
-pn.place(x=10, y=80)
+plantName = tk.Entry(plantLibraryAddFrame, bg="grey", font=("Helvetica", 40))
+plantName.place(x=10, y=80)
 
-PLAwater = tk.Label(
-    PLAframe,
+plantLibraryAddWater = tk.Label(
+    plantLibraryAddFrame,
     text="Enter Water Requirements:",
     font=("Helvetica", 40),
     bg="#E8E8E8"
 )
-PLAwater.place(x=10, y=180)
+plantLibraryAddWater.place(x=10, y=180)
 
-pw = tk.Entry(PLAframe, bg="grey", font=("Helvetica", 40))
-pw.place(x=10, y=250)
+plantWater = tk.Entry(plantLibraryAddFrame, bg="grey", font=("Helvetica", 40))
+plantWater.place(x=10, y=250)
 
-PLAsun = tk.Label(
-    PLAframe,
+plantLibraryAddSun = tk.Label(
+    plantLibraryAddFrame,
     text="Enter Sunlight Requirements:",
     font=("Helvetica", 40),
     bg="#E8E8E8"
 )
-PLAsun.place(x=10, y=350)
+plantLibraryAddSun.place(x=10, y=350)
 
-ps = tk.Entry(PLAframe, bg="grey", font=("Helvetica", 40))
-ps.place(x=10, y=420)
+plantSun = tk.Entry(plantLibraryAddFrame, bg="grey", font=("Helvetica", 40))
+plantSun.place(x=10, y=420)
 
-PLAconfirm = tk.Button(
-    PLAframe,
+plantLibraryAddConfirm = tk.Button(
+    plantLibraryAddFrame,
     text="CONFIRM",
     bg="green",
     fg="white",
@@ -528,10 +528,10 @@ PLAconfirm = tk.Button(
     width=10,
     command=addPlant
 )
-PLAconfirm.place(x=10, y=500)
+plantLibraryAddConfirm.place(x=10, y=500)
 
-PLAcancel = tk.Button(
-    PLAframe,
+plantLibraryAddCancel = tk.Button(
+    plantLibraryAddFrame,
     text="CANCEL",
     bg="red",
     fg="white",
@@ -539,11 +539,11 @@ PLAcancel = tk.Button(
     width=10,
     command=cancel
 )
-PLAcancel.place(x=200, y=500)
+plantLibraryAddCancel.place(x=200, y=500)
 
-PLAframe.place_forget()
+plantLibraryAddFrame.place_forget()
 
-#Plant Detail
+#plant Detail
 
 plantDetailFrame = tk.Frame(
     plantLibrary,
@@ -555,35 +555,35 @@ plantDetailFrame = tk.Frame(
 )
 plantDetailFrame.place_forget()
 
-PD_title = tk.Label(
+plantDetailTitle = tk.Label(
     plantDetailFrame,
     text="Plant Name",
     font=("Helvetica", 50),
     bg="#E8E8E8"
 )
-PD_title.pack(pady=30)
+plantDetailTitle.pack(pady=30)
 
-PD_water = tk.Label(
+plantDetailWater = tk.Label(
     plantDetailFrame,
     text="Water every: X days",
     font=("Helvetica", 35),
     bg="#E8E8E8"
 )
-PD_water.pack(pady=15)
+plantDetailWater.pack(pady=15)
 
-PD_sun = tk.Label(
+plantDetailSun = tk.Label(
     plantDetailFrame,
     text="Rotate every: X days",
     font=("Helvetica", 35),
     bg="#E8E8E8"
 )
-PD_sun.pack(pady=15)
+plantDetailSun.pack(pady=15)
 
-PD_buttonFrame = tk.Frame(plantDetailFrame, bg="#E8E8E8")
-PD_buttonFrame.pack(side="bottom", pady=40)
+plantDetailButtonFrame = tk.Frame(plantDetailFrame, bg="#E8E8E8")
+plantDetailButtonFrame.pack(side="bottom", pady=40)
 
-PD_back = tk.Button(
-    PD_buttonFrame,
+plantDetailBack = tk.Button(
+    plantDetailButtonFrame,
     text="BACK",
     bg="#286a26",
     fg="white",
@@ -591,13 +591,13 @@ PD_back = tk.Button(
     width=10,
     command=lambda: (
         plantDetailFrame.place_forget(),
-        PLAbutton.place(x=40, y=680)
+        plantLibraryAddButton.place(x=40, y=680)
     )
 )
-PD_back.grid(row=0, column=0, padx=20)
+plantDetailBack.grid(row=0, column=0, padx=20)
 
-PD_edit = tk.Button(
-    PD_buttonFrame,
+plantDetailEdit = tk.Button(
+    plantDetailButtonFrame,
     text="EDIT",
     bg="#4CAF50",
     fg="white",
@@ -605,10 +605,10 @@ PD_edit = tk.Button(
     width=10,
     command=editPlant
 )
-PD_edit.grid(row=0, column=1, padx=20)
+plantDetailEdit.grid(row=0, column=1, padx=20)
 
-PD_delete = tk.Button(
-    PD_buttonFrame,
+plantDetailDelete = tk.Button(
+    plantDetailButtonFrame,
     text="DELETE",
     bg="red",
     fg="white",
@@ -616,11 +616,11 @@ PD_delete = tk.Button(
     width=10,
     command=deletePlant
 )
-PD_delete.grid(row=0, column=2, padx=20)
+plantDetailDelete.grid(row=0, column=2, padx=20)
 
 #To-Do List
 
-todoContainer = tk.Frame(toDo, bg="white", bd=2, relief="solid")
+todoContainer = tk.Frame(todo, bg="white", bd=2, relief="solid")
 todoContainer.place(x=40, y=40, width=1800, height=700)
 
 todoCanvas = tk.Canvas(
@@ -647,10 +647,10 @@ todoFrame.bind(
     lambda e: todoCanvas.configure(scrollregion=todoCanvas.bbox("all"))
 )
 
-def _on_mousewheel_scroll(event):
+def onMousewheelScroll(event):
     todoCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-todoCanvas.bind_all("<MouseWheel>", _on_mousewheel_scroll)
+todoCanvas.bind_all("<MouseWheel>", onMousewheelScroll)
 
 def generateTodoTasks():
     for widget in todoFrame.winfo_children():
@@ -665,35 +665,35 @@ def generateTodoTasks():
 
     tasks.sort(key=lambda x: x[0])
 
-    for due_date, plant, task_type in tasks:
-        hours_left = int((due_date - now).total_seconds() // 3600)
+    for dueDate, plant, taskType in tasks:
+        hoursLeft = int((dueDate - now).total_seconds() // 3600)
 
-        if task_type == "water":
+        if taskType == "water":
             text = f"Water {plant.name}"
         else:
             text = f"Rotate {plant.name}"
 
-        if hours_left < 0:
-            label_text = f"{text} — OVERDUE"
+        if hoursLeft < 0:
+            labelText = f"{text} — OVERDUE"
             fg = "red"
         else:
-            label_text = f"{text} — due in {hours_left} hours"
+            labelText = f"{text} — due in {hoursLeft} hours"
             fg = "black"
 
         row = tk.Frame(todoFrame, bg="#F5FFF5")
         row.pack(fill="x", padx=20, pady=8)
 
-        task_label = tk.Label(
+        taskLabel = tk.Label(
             row,
-            text=label_text,
+            text=labelText,
             font=("Helvetica", 28),
             bg="#F5FFF5",
             fg=fg,
             anchor="w"
         )
-        task_label.pack(side="left", fill="x", expand=True)
+        taskLabel.pack(side="left", fill="x", expand=True)
 
-        check_button = tk.Button(
+        checkButton = tk.Button(
             row,
             text="○",
             font=("Helvetica", 30),
@@ -701,13 +701,13 @@ def generateTodoTasks():
             relief="flat"
         )
 
-        check_button.config(
-            command=lambda r=row, b=check_button, p=plant, t=task_type:
+        checkButton.config(
+            command=lambda r=row, b=checkButton, p=plant, t=taskType:
             completeTask(r, b, p, t)
         )
-        check_button.pack(side="right")
+        checkButton.pack(side="right")
 
-def completeTask(row, button, plant, task_type):
+def completeTask(row, button, plant, taskType):
     row.config(bg="#E0E0E0")
 
     for widget in row.winfo_children():
@@ -723,21 +723,21 @@ def completeTask(row, button, plant, task_type):
 
     now = datetime.now()
 
-    if task_type == "water":
+    if taskType == "water":
         plant.last_watered = now
-    elif task_type == "rotate":
+    elif taskType == "rotate":
         plant.last_rotated = now
 
-    db_update_plant(plant.name, plant)
+    dbUpdatePlant(plant.name, plant)
     
     root.after(600, generateTodoTasks)
 
 # Reminders 
 
-def check_reminders():
+def checkReminders():
     now = datetime.now()
 
-    for reminder in reminder_list:
+    for reminder in reminderList:
         if (
             reminder["enabled"]
             and not reminder["triggered"]
@@ -746,11 +746,11 @@ def check_reminders():
             reminder["triggered"] = True
             messagebox.showinfo("Plant Reminder", reminder["message"])
 
-    root.after(30000, check_reminders)
+    root.after(30000, checkReminders)
 
-def addReminder(remind_time, message):
-    reminder_list.append({
-        "time": remind_time,
+def addReminder(remindTime, message):
+    reminderList.append({
+        "time": remindTime,
         "message": message,
         "enabled": True,
         "triggered": False
@@ -778,47 +778,47 @@ timeEntry = tk.Entry(
 )
 timeEntry.place(x=300, y=120)
 
-msgLabel = tk.Label(
+messageLabel = tk.Label(
     reminders,
     text="Message",
     font=("Helvetica", 30)
 )
-msgLabel.place(x=40, y=200)
+messageLabel.place(x=40, y=200)
 
-msgEntry = tk.Entry(
+messageEntry = tk.Entry(
     reminders,
     font=("Helvetica", 30),
     width=25
 )
-msgEntry.place(x=300, y=200)
+messageEntry.place(x=300, y=200)
 
 def submitReminder():
     try:
-        time_str = timeEntry.get()
-        hour, minute = map(int, time_str.split(":"))
+        timeStr = timeEntry.get()
+        hour, minute = map(int, timeStr.split(":"))
 
-        remind_time = datetime.now().replace(
+        remindTime = datetime.now().replace(
             hour=hour,
             minute=minute,
             second=0,
             microsecond=0
         )
 
-        if remind_time < datetime.now():
-            remind_time += timedelta(days=1)
+        if remindTime < datetime.now():
+            remindTime += timedelta(days=1)
 
-        message = msgEntry.get()
-        addReminder(remind_time, message)
+        message = messageEntry.get()
+        addReminder(remindTime, message)
 
         messagebox.showinfo("Reminder Set", "Reminder successfully added!")
 
         timeEntry.delete(0, tk.END)
-        msgEntry.delete(0, tk.END)
+        messageEntry.delete(0, tk.END)
 
     except:
         messagebox.showerror("Error", "Invalid time format (HH:MM)")
 
-addReminderBtn = tk.Button(
+addReminderButton = tk.Button(
     reminders,
     text="Add Reminder",
     font=("Helvetica", 30),
@@ -826,7 +826,7 @@ addReminderBtn = tk.Button(
     fg="white",
     command=submitReminder
 )
-addReminderBtn.place(x=40, y=300)
+addReminderButton.place(x=40, y=300)
 
 reminderContainer = tk.Frame(reminders, bg="white", bd=2, relief="solid")
 reminderContainer.place(x=40, y=400, width=1800, height=400)
@@ -859,11 +859,11 @@ def refreshReminderList():
     for widget in reminderFrame.winfo_children():
         widget.destroy()
 
-    for reminder in reminder_list:
+    for reminder in reminderList:
         row = tk.Frame(reminderFrame, bg="#F5FFF5")
         row.pack(fill="x", padx=20, pady=10)
 
-        time_label = tk.Label(
+        timeLabel = tk.Label(
             row,
             text=reminder["time"].strftime("%I:%M %p"),
             font=("Helvetica", 26),
@@ -871,18 +871,18 @@ def refreshReminderList():
             anchor="w",
             bg="#F5FFF5"
         )
-        time_label.pack(side="left")
+        timeLabel.pack(side="left")
 
-        msg_label = tk.Label(
+        messageLabel = tk.Label(
             row,
             text=reminder["message"],
             font=("Helvetica", 26),
             bg="#F5FFF5",
             anchor="w"
         )
-        msg_label.pack(side="left", fill="x", expand=True)
+        messageLabel.pack(side="left", fill="x", expand=True)
 
-        toggle_btn = tk.Button(
+        toggleButton = tk.Button(
             row,
             text="ON" if reminder["enabled"] else "OFF",
             font=("Helvetica", 22),
@@ -890,13 +890,13 @@ def refreshReminderList():
             bg="#8BC34A" if reminder["enabled"] else "grey",
             command=lambda r=reminder: toggleReminder(r)
         )
-        toggle_btn.pack(side="right")
+        toggleButton.pack(side="right")
 
 def toggleReminder(reminder):
     reminder["enabled"] = not reminder["enabled"]
     refreshReminderList()
 
-check_reminders()
+checkReminders()
 loadPlantsFromDB()
 refreshPlantButtons()
 generateTodoTasks()
