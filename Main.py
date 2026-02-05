@@ -80,7 +80,7 @@ def dbUpdatePlant(oldName, plant):
         return
 
     cursor.execute(
-        """S
+        """
         UPDATE plants
         SET name=%s,
             water_hours=%s,
@@ -349,8 +349,12 @@ def addPlant():
             plants[name] = currentPlant
 
         currentPlant.name = name
-        currentPlant.water = water
-        currentPlant.sunlight = sun
+        currentPlant.water = int(water)
+        currentPlant.sunlight = int(sun)
+
+        plantDetailTitle.config(text=currentPlant.name)
+        plantDetailWater.config(text=f"Water every: {currentPlant.water} hours")
+        plantDetailSun.config(text=f"Rotate every: {currentPlant.sunlight} hours")
 
         refreshPlantButtons()
         dbUpdatePlant(oldName, currentPlant)
